@@ -35,7 +35,7 @@ provider "sql" {
 # connect to a MySQL server
 provider "sql" {
   alias = "mysql"
-  url   = "mysql://root:password@tcp(localhost:3306)/mysql"
+  url   = "mysql+tcp://root:password@localhost:3306/mysql"
 }
 ```
 

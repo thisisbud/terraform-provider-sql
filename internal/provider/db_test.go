@@ -29,7 +29,7 @@ var testServers = []*testServer{
 				return nil, "", err
 			}
 
-			url := fmt.Sprintf("mysql://root:tf@tcp(localhost:%s)/mysql?parseTime=true", resource.GetPort("3306/tcp"))
+			url := fmt.Sprintf("mysql+tcp://root:tf@localhost:%s/mysql?parseTime=true", resource.GetPort("3306/tcp"))
 
 			return resource, url, nil
 		},

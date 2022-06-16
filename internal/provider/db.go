@@ -3,7 +3,6 @@ package provider
 import (
     "crypto/tls"
     "crypto/x509"
-    "net/url"
 	"context"
 	"database/sql"
 	"fmt"
@@ -21,6 +20,7 @@ import (
 	// _ "modernc.org/sqlite"
 
 	"github.com/hashicorp/terraform-plugin-go/tfprotov5/tftypes"
+	"github.com/xo/dburl"
 )
 
 type dbQueryer interface {
@@ -34,7 +34,7 @@ type dbExecer interface {
 func (p *provider) connect(dsn string, caCert string, caClientCert string, caClientKey string) error {
 	var err error
 
-    parsed_url, err := url.Parse(dsn)
+    parsed_url, err := dburl.Parse(dsn)
     if err != nil {
         return err
     }
