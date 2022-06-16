@@ -16,9 +16,6 @@ import (
 	"github.com/go-sql-driver/mysql"
 	_ "github.com/jackc/pgx/v4/stdlib"
 
-	// TODO: sqlite? need to use a pure go driver, i think this one is...
-	// _ "modernc.org/sqlite"
-
 	"github.com/hashicorp/terraform-plugin-go/tfprotov5/tftypes"
 	"github.com/xo/dburl"
 )
