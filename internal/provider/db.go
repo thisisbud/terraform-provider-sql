@@ -10,10 +10,11 @@ import (
 	"reflect"
 	"strings"
 	"time"
+	"errors"
 
 	// database drivers
 	_ "github.com/denisenkom/go-mssqldb"
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/go-sql-driver/mysql"
 	_ "github.com/jackc/pgx/v4/stdlib"
 
 	// TODO: sqlite? need to use a pure go driver, i think this one is...
@@ -35,10 +36,10 @@ func (p *provider) connect(dsn string, caCert string, caClientCert string, caCli
 
     parsed_url, err := url.Parse(dsn)
     if err != nil {
-        return nil, err
+        return err
     }
 
-	scheme = parsed_url.Scheme
+	var scheme = parsed_url.Scheme
 
 	switch scheme {
 	case "postgres", "postgresql":
@@ -51,29 +52,32 @@ func (p *provider) connect(dsn string, caCert string, caClientCert string, caCli
 		// https://github.com/golang-migrate/migrate/blob/master/database/mysql/mysql.go
 
 		// TODO: also set parseTime=true https://github.com/go-sql-driver/mysql#parsetime
+
+        if caCert != "" {
+            pool := x509.NewCertPool()
+            if ok := pool.AppendCertsFromPEM([]byte(caCert)); !ok {
+                    return err
+            }
+            cert, err := tls.X509KeyPair([]byte(caClientCert), []byte(caClientKey))
+            if err != nil {
+                    return err
+            }
+            mysql.RegisterTLSConfig("cloudsql", &tls.Config{
+                    RootCAs:               pool,
+                    Certificates:          []tls.Certificate{cert},
+                    InsecureSkipVerify:    true,
+                    VerifyPeerCertificate: verifyPeerCertFunc(pool),
+            })
+            values := parsed_url.Query()
+            values.Add("tls", "cloudsql")
+            parsed_url.RawQuery = values.Encode()
+        }
+
 	case "sqlserver":
 		p.Driver = "sqlserver"
 	default:
 		return fmt.Errorf("unexpected datasource name scheme: %q", scheme)
 	}
-
-    if caCert != "" {
-        pool := x509.NewCertPool()
-        if ok := pool.AppendCertsFromPEM(caCert); !ok {
-                return nil, err
-        }
-        cert, err := tls.X509KeyPair(caClientCert, caClientKey)
-        if err != nil {
-                return nil, err
-        }
-        mysql.RegisterTLSConfig("cloudsql", &tls.Config{
-                RootCAs:               pool,
-                Certificates:          []tls.Certificate{cert},
-                InsecureSkipVerify:    true,
-                VerifyPeerCertificate: verifyPeerCertFunc(pool),
-        })
-        parsed_url.Values{}.add("tls", "cloudsql")
-    }
 
 	p.DB, err = sql.Open(string(p.Driver), parsed_url.String())
 	if err != nil {
@@ -266,7 +270,7 @@ func (p *provider) typeAndValueForColType(colType *sql.ColumnType) (tftypes.Type
 func verifyPeerCertFunc(pool *x509.CertPool) func([][]byte, [][]*x509.Certificate) error {
         return func(rawCerts [][]byte, _ [][]*x509.Certificate) error {
                 if len(rawCerts) == 0 {
-                        return errors.New("no certificates available to verify")
+                    return errors.New("no certificates available to verify")
                 }
 
                 cert, err := x509.ParseCertificate(rawCerts[0])

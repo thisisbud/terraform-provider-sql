@@ -114,9 +114,9 @@ func (p *provider) Configure(ctx context.Context, config map[string]tftypes.Valu
 		url          string
 		maxOpenConns *big.Float
 		maxIdleConns *big.Float
-		ssl_ca_cert string
-		ssl_client_cert string
-		ssl_client_key string
+		sslCACert string
+		sslClientCert string
+		sslClientKey string
 	)
 	if v := config["url"]; v.IsNull() {
 		url = os.Getenv("SQL_URL")
