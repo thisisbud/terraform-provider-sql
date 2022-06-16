@@ -15,9 +15,10 @@ import (
 	_ "github.com/denisenkom/go-mssqldb"
 	"github.com/go-sql-driver/mysql"
 	_ "github.com/jackc/pgx/v4/stdlib"
+    "github.com/xo/dburl"
 
 	"github.com/hashicorp/terraform-plugin-go/tfprotov5/tftypes"
-	"github.com/xo/dburl"
+
 )
 
 type dbQueryer interface {
