@@ -192,7 +192,7 @@ func (p *provider) Configure(ctx context.Context, config map[string]tftypes.Valu
 		}
 	}
 
-	err = p.connect(url)
+	err = p.connect(url, sslCACert, sslClientCert, sslClientKey)
 	if err != nil {
 		return nil, fmt.Errorf("ConfigureProvider - unable to open database: %w", err)
 	}
