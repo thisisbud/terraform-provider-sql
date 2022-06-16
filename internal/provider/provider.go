@@ -75,21 +75,21 @@ func (p *provider) Schema(context.Context) *tfprotov5.Schema {
 				{
                     Name: "ssl_ca_cert",
                     Optional: true,
-                    Description: "Accepts a PEM formatted SSL CA certificate to be used for the connection to the database"
+                    Description: "Accepts a PEM formatted SSL CA certificate to be used for the connection to the database",
                     DescriptionKind: tfprotov5.StringKindMarkdown,
                     Type: tftypes.String,
 				},
 				{
                     Name: "ssl_client_cert",
                     Optional: true,
-                    Description: "Accepts a PEM formatted SSL client certificate to be used for the connection to the database"
+                    Description: "Accepts a PEM formatted SSL client certificate to be used for the connection to the database",
                     DescriptionKind: tfprotov5.StringKindMarkdown,
                     Type: tftypes.String,
 				},
 				{
                     Name: "ssl_client_key",
                     Optional: true,
-                    Description: "Accepts a SSL client private key to be used for the connection to the database"
+                    Description: "Accepts a SSL client private key to be used for the connection to the database",
                     DescriptionKind: tfprotov5.StringKindMarkdown,
                     Type: tftypes.String,
 				},
