@@ -3,22 +3,18 @@ package provider
 import (
     "crypto/tls"
     "crypto/x509"
-	"context"
-	"database/sql"
-	"fmt"
-	"reflect"
-	"strings"
-	"time"
-	"errors"
-
-	// database drivers
-	_ "github.com/denisenkom/go-mssqldb"
-	"github.com/go-sql-driver/mysql"
-	_ "github.com/jackc/pgx/v4/stdlib"
+    "context"
+    "database/sql"
+    "fmt"
+    "reflect"
+    "strings"
+    "time"
+    "errors"
+    _ "github.com/denisenkom/go-mssqldb"
+    "github.com/go-sql-driver/mysql"
+    _ "github.com/jackc/pgx/v4/stdlib"
     "github.com/xo/dburl"
-
-	"github.com/hashicorp/terraform-plugin-go/tfprotov5/tftypes"
-
+    "github.com/hashicorp/terraform-plugin-go/tfprotov5/tftypes"
 )
 
 type dbQueryer interface {
