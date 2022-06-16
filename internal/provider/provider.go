@@ -163,7 +163,7 @@ func (p *provider) Configure(ctx context.Context, config map[string]tftypes.Valu
 	}
 
     if v := config["ssl_ca_cert"]; v.IsNull() {
-		sslCACert = "nil"
+		sslCACert = ""
 	} else {
 		err = config["ssl_ca_cert"].As(&sslCACert)
 		if err != nil {
