@@ -163,7 +163,7 @@ func (p *provider) Configure(ctx context.Context, config map[string]tftypes.Valu
 	}
 
     if v := config["ssl_ca_cert"]; v.IsNull() {
-		sslCACert = nil
+		sslCACert = "nil"
 	} else {
 		err = config["ssl_ca_cert"].As(&sslCACert)
 		if err != nil {
@@ -173,7 +173,7 @@ func (p *provider) Configure(ctx context.Context, config map[string]tftypes.Valu
 	}
 
     if v := config["ssl_client_cert"]; v.IsNull() {
-		sslClientCert = nil
+		sslClientCert = ""
 	} else {
 		err = config["ssl_client_cert"].As(&sslClientCert)
 		if err != nil {
@@ -183,7 +183,7 @@ func (p *provider) Configure(ctx context.Context, config map[string]tftypes.Valu
 	}
 
     if v := config["ssl_client_key"]; v.IsNull() {
-		sslClientKey = nil
+		sslClientKey = ""
 	} else {
 		err = config["ssl_client_key"].As(&sslClientKey)
 		if err != nil {
