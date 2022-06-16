@@ -72,7 +72,7 @@ func (p *provider) connect(dsn string, caCert string, caClientCert string, caCli
                 InsecureSkipVerify:    true,
                 VerifyPeerCertificate: verifyPeerCertFunc(pool),
         })
-        url.Values{}.add("tls", "cloudsql")
+        parsed_url.Values{}.add("tls", "cloudsql")
     }
 
 	p.DB, err = sql.Open(string(p.Driver), parsed_url.String())
