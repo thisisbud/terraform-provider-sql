@@ -214,7 +214,7 @@ func (td *testServer) Start() error {
 
 		td.resourceOnceErr = dockerPool.Retry(func() error {
 			p := &provider{}
-			err := p.connect(td.url)
+			err := p.connect(td.url, "", "", "")
 			if err != nil {
 				return err
 			}
@@ -233,7 +233,7 @@ func (td *testServer) Start() error {
 
 		if td.OnReady != nil {
 			p := &provider{}
-			td.resourceOnceErr = p.connect(td.url)
+			td.resourceOnceErr = p.connect(td.url, "", "", "")
 			if td.resourceOnceErr != nil {
 				return
 			}
