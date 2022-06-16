@@ -1,6 +1,6 @@
 module github.com/paultyng/terraform-provider-sql
 
-go 1.16
+go 1.18
 
 require (
 	github.com/aws/aws-sdk-go v1.27.0 // indirect
