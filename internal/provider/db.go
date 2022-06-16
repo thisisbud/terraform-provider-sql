@@ -1,6 +1,9 @@
 package provider
 
 import (
+    "crypto/tls"
+    "crypto/x509"
+    "net/url"
 	"context"
 	"database/sql"
 	"fmt"
@@ -27,13 +30,15 @@ type dbExecer interface {
 	ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error)
 }
 
-func (p *provider) connect(dsn string) error {
+func (p *provider) connect(dsn string, caCert string, caClientCert string, caClientKey string) error {
 	var err error
 
-	scheme, err := schemeFromURL(dsn)
-	if err != nil {
-		return err
-	}
+    parsed_url, err := url.Parse(dsn)
+    if err != nil {
+        return nil, err
+    }
+
+	scheme = parsed_url.Scheme
 
 	switch scheme {
 	case "postgres", "postgresql":
@@ -52,7 +57,25 @@ func (p *provider) connect(dsn string) error {
 		return fmt.Errorf("unexpected datasource name scheme: %q", scheme)
 	}
 
-	p.DB, err = sql.Open(string(p.Driver), dsn)
+    if caCert != "" {
+        pool := x509.NewCertPool()
+        if ok := pool.AppendCertsFromPEM(caCert); !ok {
+                return nil, err
+        }
+        cert, err := tls.X509KeyPair(caClientCert, caClientKey)
+        if err != nil {
+                return nil, err
+        }
+        mysql.RegisterTLSConfig("cloudsql", &tls.Config{
+                RootCAs:               pool,
+                Certificates:          []tls.Certificate{cert},
+                InsecureSkipVerify:    true,
+                VerifyPeerCertificate: verifyPeerCertFunc(pool),
+        })
+        url.Values{}.add("tls", "cloudsql")
+    }
+
+	p.DB, err = sql.Open(string(p.Driver), parsed_url.String())
 	if err != nil {
 		return fmt.Errorf("unable to open database: %w", err)
 	}
@@ -236,4 +259,25 @@ func (p *provider) typeAndValueForColType(colType *sql.ColumnType) (tftypes.Type
 	}
 
 	return nil, nil, fmt.Errorf("unexpected type for %q: %q (%s %s)", colType.Name(), colType.DatabaseTypeName(), kind, scanType)
+}
+
+// verifyPeerCertFunc returns a function that verifies the peer certificate is
+// in the cert pool.
+func verifyPeerCertFunc(pool *x509.CertPool) func([][]byte, [][]*x509.Certificate) error {
+        return func(rawCerts [][]byte, _ [][]*x509.Certificate) error {
+                if len(rawCerts) == 0 {
+                        return errors.New("no certificates available to verify")
+                }
+
+                cert, err := x509.ParseCertificate(rawCerts[0])
+                if err != nil {
+                        return err
+                }
+
+                opts := x509.VerifyOptions{Roots: pool}
+                if _, err = cert.Verify(opts); err != nil {
+                        return err
+                }
+                return nil
+        }
 }

@@ -72,6 +72,27 @@ func (p *provider) Schema(context.Context) *tfprotov5.Schema {
 					DescriptionKind: tfprotov5.StringKindMarkdown,
 					Type:            tftypes.Number,
 				},
+				{
+                    Name: "ssl_ca_cert",
+                    Optional: true,
+                    Description: "Accepts a PEM formatted SSL CA certificate to be used for the connection to the database"
+                    DescriptionKind: tfprotov5.StringKindMarkdown,
+                    Type: tftypes.String,
+				},
+				{
+                    Name: "ssl_client_cert",
+                    Optional: true,
+                    Description: "Accepts a PEM formatted SSL client certificate to be used for the connection to the database"
+                    DescriptionKind: tfprotov5.StringKindMarkdown,
+                    Type: tftypes.String,
+				},
+				{
+                    Name: "ssl_client_key",
+                    Optional: true,
+                    Description: "Accepts a SSL client private key to be used for the connection to the database"
+                    DescriptionKind: tfprotov5.StringKindMarkdown,
+                    Type: tftypes.String,
+				},
 			},
 		},
 	}
@@ -93,6 +114,9 @@ func (p *provider) Configure(ctx context.Context, config map[string]tftypes.Valu
 		url          string
 		maxOpenConns *big.Float
 		maxIdleConns *big.Float
+		ssl_ca_cert string
+		ssl_client_cert string
+		ssl_client_key string
 	)
 	if v := config["url"]; v.IsNull() {
 		url = os.Getenv("SQL_URL")
@@ -135,6 +159,36 @@ func (p *provider) Configure(ctx context.Context, config map[string]tftypes.Valu
 		if err != nil {
 			// TODO: diag with path
 			return nil, fmt.Errorf("ConfigureProvider - unable to read max_idle_conns: %w", err)
+		}
+	}
+
+    if v := config["ssl_ca_cert"]; v.IsNull() {
+		sslCACert = nil
+	} else {
+		err = config["ssl_ca_cert"].As(&sslCACert)
+		if err != nil {
+			// TODO: diag with path
+			return nil, fmt.Errorf("ConfigureProvider - unable to read ssl_ca_cert: %w", err)
+		}
+	}
+
+    if v := config["ssl_client_cert"]; v.IsNull() {
+		sslClientCert = nil
+	} else {
+		err = config["ssl_client_cert"].As(&sslClientCert)
+		if err != nil {
+			// TODO: diag with path
+			return nil, fmt.Errorf("ConfigureProvider - unable to read ssl_client_cert: %w", err)
+		}
+	}
+
+    if v := config["ssl_client_key"]; v.IsNull() {
+		sslClientKey = nil
+	} else {
+		err = config["ssl_client_key"].As(&sslClientKey)
+		if err != nil {
+			// TODO: diag with path
+			return nil, fmt.Errorf("ConfigureProvider - unable to read ssl_client_key: %w", err)
 		}
 	}
 
