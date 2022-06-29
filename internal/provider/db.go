@@ -57,12 +57,15 @@ func (p *provider) connect(dsn string, caCert string, caClientCert string, caCli
 			if err != nil {
 				return err
 			}
-			mysql.RegisterTLSConfig("cloudsql", &tls.Config{
+			err = mysql.RegisterTLSConfig("cloudsql", &tls.Config{
 				RootCAs:               pool,
 				Certificates:          []tls.Certificate{cert},
 				InsecureSkipVerify:    true,
 				VerifyPeerCertificate: verifyPeerCertFunc(pool),
 			})
+			if err != nil {
+				return err
+			}
 			values := parsed_url.Query()
 			values.Add("tls", "cloudsql")
 			parsed_url.RawQuery = values.Encode()
