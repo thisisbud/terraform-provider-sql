@@ -7,7 +7,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"net/url"
 	"reflect"
 	"strings"
 	"time"
@@ -16,6 +15,7 @@ import (
 	"github.com/go-sql-driver/mysql"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov5/tftypes"
 	_ "github.com/jackc/pgx/v4/stdlib"
+	"github.com/xo/dburl"
 )
 
 type dbQueryer interface {
@@ -29,8 +29,7 @@ type dbExecer interface {
 func (p *provider) connect(dsn string, caCert string, caClientCert string, caClientKey string) error {
 	var err error
 
-	parsed_url, err := url.Parse(dsn)
-
+	parsed_url, err := dburl.Parse(dsn)
 	if err != nil {
 		return err
 	}
@@ -75,7 +74,7 @@ func (p *provider) connect(dsn string, caCert string, caClientCert string, caCli
 		return fmt.Errorf("unexpected datasource name scheme: %q", scheme)
 	}
 
-	p.DB, err = sql.Open(string(p.Driver), parsed_url.String())
+	p.DB, err = dburl.Open(parsed_url.String())
 	if err != nil {
 		return fmt.Errorf("unable to open database: %w, string %s", err, parsed_url.String())
 	}

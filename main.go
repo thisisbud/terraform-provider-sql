@@ -28,7 +28,7 @@ var (
 )
 
 const (
-	providerAddr = "registry.terraform.io/paultyng/sql"
+	providerAddr = "registry.terraform.io/josh-thisisbud/sql"
 )
 
 func main() {
