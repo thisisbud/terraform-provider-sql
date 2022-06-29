@@ -1,20 +1,21 @@
 package provider
 
 import (
-    "crypto/tls"
-    "crypto/x509"
-    "context"
-    "database/sql"
-    "fmt"
-    "reflect"
-    "strings"
-    "time"
-    "errors"
-    _ "github.com/denisenkom/go-mssqldb"
-    "github.com/go-sql-driver/mysql"
-    _ "github.com/jackc/pgx/v4/stdlib"
-    "github.com/xo/dburl"
-    "github.com/hashicorp/terraform-plugin-go/tfprotov5/tftypes"
+	"context"
+	"crypto/tls"
+	"crypto/x509"
+	"database/sql"
+	"errors"
+	"fmt"
+	"reflect"
+	"strings"
+	"time"
+
+	_ "github.com/denisenkom/go-mssqldb"
+	"github.com/go-sql-driver/mysql"
+	"github.com/hashicorp/terraform-plugin-go/tfprotov5/tftypes"
+	_ "github.com/jackc/pgx/v4/stdlib"
+	"github.com/xo/dburl"
 )
 
 type dbQueryer interface {
@@ -28,10 +29,10 @@ type dbExecer interface {
 func (p *provider) connect(dsn string, caCert string, caClientCert string, caClientKey string) error {
 	var err error
 
-    parsed_url, err := dburl.Parse(dsn)
-    if err != nil {
-        return err
-    }
+	parsed_url, err := dburl.Parse(dsn)
+	if err != nil {
+		return err
+	}
 
 	var scheme = parsed_url.Scheme
 
@@ -47,25 +48,25 @@ func (p *provider) connect(dsn string, caCert string, caClientCert string, caCli
 
 		// TODO: also set parseTime=true https://github.com/go-sql-driver/mysql#parsetime
 
-        if caCert != "" {
-            pool := x509.NewCertPool()
-            if ok := pool.AppendCertsFromPEM([]byte(caCert)); !ok {
-                    return err
-            }
-            cert, err := tls.X509KeyPair([]byte(caClientCert), []byte(caClientKey))
-            if err != nil {
-                    return err
-            }
-            mysql.RegisterTLSConfig("cloudsql", &tls.Config{
-                    RootCAs:               pool,
-                    Certificates:          []tls.Certificate{cert},
-                    InsecureSkipVerify:    true,
-                    VerifyPeerCertificate: verifyPeerCertFunc(pool),
-            })
-            values := parsed_url.Query()
-            values.Add("tls", "cloudsql")
-            parsed_url.RawQuery = values.Encode()
-        }
+		if caCert != "" {
+			pool := x509.NewCertPool()
+			if ok := pool.AppendCertsFromPEM([]byte(caCert)); !ok {
+				return err
+			}
+			cert, err := tls.X509KeyPair([]byte(caClientCert), []byte(caClientKey))
+			if err != nil {
+				return err
+			}
+			mysql.RegisterTLSConfig("cloudsql", &tls.Config{
+				RootCAs:               pool,
+				Certificates:          []tls.Certificate{cert},
+				InsecureSkipVerify:    true,
+				VerifyPeerCertificate: verifyPeerCertFunc(pool),
+			})
+			values := parsed_url.Query()
+			values.Add("tls", "cloudsql")
+			parsed_url.RawQuery = values.Encode()
+		}
 
 	case "sqlserver":
 		p.Driver = "sqlserver"
@@ -75,7 +76,7 @@ func (p *provider) connect(dsn string, caCert string, caClientCert string, caCli
 
 	p.DB, err = dburl.Open(parsed_url.String())
 	if err != nil {
-		return fmt.Errorf("unable to open database: %w", err)
+		return fmt.Errorf("unable to open database: %w, string %s", err, parsed_url.String())
 	}
 
 	// force this to zero, but let callers override config
@@ -262,20 +263,20 @@ func (p *provider) typeAndValueForColType(colType *sql.ColumnType) (tftypes.Type
 // verifyPeerCertFunc returns a function that verifies the peer certificate is
 // in the cert pool.
 func verifyPeerCertFunc(pool *x509.CertPool) func([][]byte, [][]*x509.Certificate) error {
-        return func(rawCerts [][]byte, _ [][]*x509.Certificate) error {
-                if len(rawCerts) == 0 {
-                    return errors.New("no certificates available to verify")
-                }
+	return func(rawCerts [][]byte, _ [][]*x509.Certificate) error {
+		if len(rawCerts) == 0 {
+			return errors.New("no certificates available to verify")
+		}
 
-                cert, err := x509.ParseCertificate(rawCerts[0])
-                if err != nil {
-                        return err
-                }
+		cert, err := x509.ParseCertificate(rawCerts[0])
+		if err != nil {
+			return err
+		}
 
-                opts := x509.VerifyOptions{Roots: pool}
-                if _, err = cert.Verify(opts); err != nil {
-                        return err
-                }
-                return nil
-        }
+		opts := x509.VerifyOptions{Roots: pool}
+		if _, err = cert.Verify(opts); err != nil {
+			return err
+		}
+		return nil
+	}
 }

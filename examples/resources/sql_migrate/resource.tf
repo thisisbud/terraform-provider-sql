@@ -1,5 +1,6 @@
 resource "sql_migrate" "db" {
-  migration {
+  migration { 
+    id = "1"
     up = <<SQL
 CREATE TABLE users (
 	user_id integer unique,
@@ -12,6 +13,7 @@ SQL
   }
 
   migration {
+    id = "2"
     up   = "INSERT INTO users VALUES (1, 'Paul Tyng', 'paul@example.com');"
     down = "DELETE FROM users WHERE user_id = 1;"
   }
