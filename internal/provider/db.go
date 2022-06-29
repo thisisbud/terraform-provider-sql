@@ -7,6 +7,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"net/url"
 	"reflect"
 	"strings"
 	"time"
@@ -29,7 +30,8 @@ type dbExecer interface {
 func (p *provider) connect(dsn string, caCert string, caClientCert string, caClientKey string) error {
 	var err error
 
-	parsed_url, err := dburl.Parse(dsn)
+	parsed_url, err := url.Parse(dsn)
+
 	if err != nil {
 		return err
 	}
