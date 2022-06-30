@@ -77,7 +77,7 @@ func (p *provider) connect(dsn string, caCert string, caClientCert string, caCli
 		return fmt.Errorf("unexpected datasource name scheme: %q", scheme)
 	}
 
-	p.DB, err = dburl.Open(parsed_url.String())
+	p.DB, err = sql.Open(string(p.Driver), parsed_url.String())
 	if err != nil {
 		return fmt.Errorf("unable to open database: %w, string %s", err, parsed_url.String())
 	}

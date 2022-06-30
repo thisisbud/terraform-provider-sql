@@ -254,3 +254,8 @@ func (td *testServer) Cleanup() {
 		dockerPool.Purge(td.resource)
 	}
 }
+
+func TestDbUrl(t *testing.T) {
+	//	dburl.Open("postgres://postgres:password@localhost:5432/mydatabase?sslmode=disable")
+	sql.Open("postgres", "postgres:password@localhost:5432/mydatabase?sslmode=disable")
+}
