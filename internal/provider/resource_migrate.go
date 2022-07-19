@@ -62,6 +62,13 @@ func (r *resourceMigrate) Schema(ctx context.Context) *tfprotov5.Schema {
 								DescriptionKind: tfprotov5.StringKindMarkdown,
 								Type:            tftypes.String,
 							},
+							{
+								Name:            "triggers",
+								Optional:        true,
+								Description:     "Triggers down and up migrations",
+								DescriptionKind: tfprotov5.StringKindMarkdown,
+								Type:            tftypes.Map{},
+							},
 						},
 					},
 				},
