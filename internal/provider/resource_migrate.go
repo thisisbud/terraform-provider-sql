@@ -61,7 +61,7 @@ func (r *resourceMigrate) Schema(ctx context.Context) *tfprotov5.Schema {
 								Description:     "The query to run when undoing this migration.",
 								DescriptionKind: tfprotov5.StringKindMarkdown,
 								Type:            tftypes.String,
-							}
+							},
 						},
 					},
 				},
