@@ -38,7 +38,7 @@ func Up(ctx context.Context, db SQLExecer, all, applied []Migration) error {
 
 	err := runMigrations(ctx, false, removedMigrations, execMigration(db))
 	if err != nil {
-		return nil
+		return err
 	}
 
 	err = runMigrations(ctx, true, newMigrations, execMigration(db))
