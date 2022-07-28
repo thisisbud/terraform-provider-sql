@@ -1,0 +1,1 @@
+# platform-terraform-provider-sql
