@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/denisenkom/go-mssqldb v0.10.0
 	github.com/go-sql-driver/mysql v1.6.0
-	github.com/google/go-cmp v0.5.6
+	github.com/google/go-cmp v0.5.9
 	github.com/hashicorp/go-argmapper v0.1.1
 	github.com/hashicorp/go-plugin v1.4.1
 	github.com/hashicorp/terraform-plugin-docs v0.5.0
