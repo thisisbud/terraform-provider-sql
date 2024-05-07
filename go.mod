@@ -11,7 +11,7 @@ require (
 	github.com/hashicorp/terraform-plugin-docs v0.5.0
 	github.com/hashicorp/terraform-plugin-go v0.2.1
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.5.0
-	github.com/jackc/pgx/v4 v4.18.2
+	github.com/jackc/pgx/v4 v4.18.3
 	github.com/ory/dockertest/v3 v3.6.3
 	github.com/xo/dburl v0.11.0
 )
