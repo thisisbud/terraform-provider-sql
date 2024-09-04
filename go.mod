@@ -6,7 +6,7 @@ require (
 	github.com/denisenkom/go-mssqldb v0.12.3
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/google/go-cmp v0.6.0
-	github.com/hashicorp/go-argmapper v0.1.1
+	github.com/hashicorp/go-argmapper v0.2.4
 	github.com/hashicorp/go-plugin v1.6.1
 	github.com/hashicorp/terraform-plugin-docs v0.5.0
 	github.com/hashicorp/terraform-plugin-go v0.2.1
