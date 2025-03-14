@@ -13,7 +13,7 @@ require (
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.5.0
 	github.com/jackc/pgx/v4 v4.18.3
 	github.com/ory/dockertest/v3 v3.11.0
-	github.com/xo/dburl v0.23.2
+	github.com/xo/dburl v0.23.4
 )
 
 require (
