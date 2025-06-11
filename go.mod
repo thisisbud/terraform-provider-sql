@@ -4,7 +4,7 @@ go 1.23.0
 
 require (
 	github.com/denisenkom/go-mssqldb v0.12.3
-	github.com/go-sql-driver/mysql v1.9.0
+	github.com/go-sql-driver/mysql v1.9.2
 	github.com/google/go-cmp v0.6.0
 	github.com/hashicorp/go-argmapper v0.2.4
 	github.com/hashicorp/go-plugin v1.6.3
